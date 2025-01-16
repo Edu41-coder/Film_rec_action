@@ -1,0 +1,28 @@
+version: "3.8"
+# Indique la version du fichier Docker Compose. "3.8" est une version courante compatible avec les fonctionnalités modernes.
+
+services:
+  frontend:
+    # Définition du service "frontend", représentant le conteneur pour le front-end.
+    build:
+      context: ./frontend
+      # Chemin vers le répertoire contenant les fichiers nécessaires à la construction de l'image pour le front-end.
+      dockerfile: Dockerfile
+      # Nom du Dockerfile utilisé pour construire le conteneur du front-end (se trouve dans ./frontend/Dockerfile).
+    ports:
+      - "7000:7000"
+      # Mappe le port 80 du conteneur (où le front-end est servi  via Nginx) au port 6000 de l'hôte.
+
+  backend:
+    # Définition du service "backend", représentant le conteneur pour le back-end (FastAPI).
+    build:
+      context: .
+      # Chemin vers le répertoire racine (.) contenant les fichiers nécessaires à la construction de l'image pour le back-end.
+      dockerfile: api/Dockerfile
+      # Spécifie le fichier Dockerfile utilisé pour construire le conteneur du back-end (./api/Dockerfile).
+    ports:
+      - "7010:7010"
+      # Mappe le port 7000 du conteneur (où FastAPI est exécuté) au port 7000 de l'hôte.
+    environment:
+      - FASTAPI_ENV=production
+      # Définit une variable d'environnement dans le conteneur, ici pour spécifier un environnement de production.

@@ -1,0 +1,134 @@
+schema: '2.0'
+stages:
+  load_clean_data:
+    cmd: python pipelines/load_clean_data.py
+    deps:
+    - path: datasets/raw_files/movies.csv
+      hash: md5
+      md5: 23b066571ca80fc78947840b05ac57b4
+      size: 1397542
+    - path: datasets/raw_files/ratings.csv
+      hash: md5
+      md5: b5295ddb3165cd002297e9ce18adea47
+      size: 533444411
+    - path: datasets/raw_files/tags.csv
+      hash: md5
+      md5: 08d8c760928a59f09d1a5b72258a56d1
+      size: 16603996
+    - path: pipelines/load_clean_data.py
+      hash: md5
+      md5: fa74b10a593af03452f6c4cf8ac004bd
+      size: 312
+    outs:
+    - path: datasets/clean_data/cleaned_movies.csv
+      hash: md5
+      md5: e4d7033e4d6b70c9d49c7ad4e659cca1
+      size: 1370263
+    - path: datasets/clean_data/cleaned_ratings.csv
+      hash: md5
+      md5: e63b65d207305376229df5996da7d72d
+      size: 513444147
+    - path: datasets/clean_data/cleaned_tags.csv
+      hash: md5
+      md5: 06236222851dd298f50b753f042166ea
+      size: 16068569
+  analyze_data:
+    cmd: python pipelines/analyse_data.py
+    deps:
+    - path: datasets/clean_data/cleaned_movies.csv
+      hash: md5
+      md5: e4d7033e4d6b70c9d49c7ad4e659cca1
+      size: 1370263
+    - path: datasets/clean_data/cleaned_ratings.csv
+      hash: md5
+      md5: e63b65d207305376229df5996da7d72d
+      size: 513444147
+    - path: datasets/clean_data/cleaned_tags.csv
+      hash: md5
+      md5: 06236222851dd298f50b753f042166ea
+      size: 16068569
+    - path: pipelines/analyse_data.py
+      hash: md5
+      md5: 9d2ce28e25534fdef5cf607f8f446842
+      size: 287
+    outs:
+    - path: datasets/analyses/analyse_cleaned_movies.txt
+      hash: md5
+      md5: a44082501fcfc15b5f47ac059ec734ce
+      size: 1074
+    - path: datasets/analyses/analyse_cleaned_ratings.txt
+      hash: md5
+      md5: 5580d2cd22a85ba40f9e0c82aae2071a
+      size: 1229
+    - path: datasets/analyses/film_year_distribution.png
+      hash: md5
+      md5: 858dbac624409b13e44c805963f9c601
+      size: 37770
+    - path: datasets/analyses/movies_genres_distribution.png
+      hash: md5
+      md5: 55aa7972f3dfb39c88c9d0777ddd4a8c
+      size: 40502
+    - path: datasets/analyses/ratings_distribution.png
+      hash: md5
+      md5: 4b2e4f6603d74c45f7623b333d60eb71
+      size: 17652
+  optimize_data:
+    cmd: python pipelines/optimize_data.py
+    deps:
+    - path: datasets/clean_data/cleaned_movies.csv
+      hash: md5
+      md5: e4d7033e4d6b70c9d49c7ad4e659cca1
+      size: 1370263
+    - path: datasets/clean_data/cleaned_ratings.csv
+      hash: md5
+      md5: e63b65d207305376229df5996da7d72d
+      size: 513444147
+    - path: datasets/clean_data/cleaned_tags.csv
+      hash: md5
+      md5: 06236222851dd298f50b753f042166ea
+      size: 16068569
+    - path: pipelines/optimize_data.py
+      hash: md5
+      md5: 88401587211db0a1555dc1caccd28486
+      size: 233
+    outs:
+    - path: datasets/clean_data/optimized_movies.csv
+      hash: md5
+      md5: 1366c92dba13435b958b2636fe90c4bf
+      size: 172969301
+    - path: datasets/clean_data/tfidf.pkl
+      hash: md5
+      md5: 77f2bb4cbb8eca95a1e585e5e138930b
+      size: 351634
+  split_data:
+    cmd: python pipelines/split_data.py
+    deps:
+    - path: datasets/clean_data/optimized_movies.csv
+      hash: md5
+      md5: 1366c92dba13435b958b2636fe90c4bf
+      size: 172969301
+    - path: pipelines/split_data.py
+      hash: md5
+      md5: 0ae022c429b2d02792114812a78c6960
+      size: 230
+    outs:
+    - path: datasets/clean_data/train_movies.csv
+      hash: md5
+      md5: 6168a459f7e107fcddb48b4d0ecd5337
+      size: 138050771
+  train_models:
+    cmd: python pipelines/train_models.py
+    deps:
+    - path: datasets/clean_data/tfidf.pkl
+      hash: md5
+      md5: 77f2bb4cbb8eca95a1e585e5e138930b
+      size: 351634
+    - path: datasets/clean_data/train_movies.csv
+      hash: md5
+      md5: 6168a459f7e107fcddb48b4d0ecd5337
+      size: 138050771
+    outs:
+    - path: datasets/model/best_model.pkl
+      hash: md5
+      md5: f537054da6690bcc24fb00a427559244
+      size: 52007

@@ -1,0 +1,53 @@
+stages:
+  load_clean_data:
+    cmd: python pipelines/load_clean_data.py
+    deps:
+      - pipelines/load_clean_data.py
+      - datasets/raw_files/movies.csv
+      - datasets/raw_files/ratings.csv
+      - datasets/raw_files/tags.csv
+    outs:
+      - datasets/clean_data/cleaned_movies.csv
+      - datasets/clean_data/cleaned_ratings.csv
+      - datasets/clean_data/cleaned_tags.csv
+
+  analyze_data:
+    cmd: python pipelines/analyse_data.py
+    deps:
+      - pipelines/analyse_data.py
+      - datasets/clean_data/cleaned_movies.csv
+      - datasets/clean_data/cleaned_ratings.csv
+      - datasets/clean_data/cleaned_tags.csv
+    outs:
+      - datasets/analyses/analyse_cleaned_movies.txt
+      - datasets/analyses/analyse_cleaned_ratings.txt
+      - datasets/analyses/film_year_distribution.png
+      - datasets/analyses/movies_genres_distribution.png
+      - datasets/analyses/ratings_distribution.png
+
+  optimize_data:
+    cmd: python pipelines/optimize_data.py
+    deps:
+      - pipelines/optimize_data.py
+      - datasets/clean_data/cleaned_movies.csv
+      - datasets/clean_data/cleaned_ratings.csv
+      - datasets/clean_data/cleaned_tags.csv
+    outs:
+      - datasets/clean_data/optimized_movies.csv
+      - datasets/clean_data/tfidf.pkl
+
+  split_data:
+    cmd: python pipelines/split_data.py
+    deps:
+      - pipelines/split_data.py
+      - datasets/clean_data/optimized_movies.csv
+    outs:
+      - datasets/clean_data/train_movies.csv
+
+  train_models:
+    cmd: python pipelines/train_models.py
+    deps:
+      - datasets/clean_data/train_movies.csv
+      - datasets/clean_data/tfidf.pkl
+    outs:
+      - datasets/model/best_model.pkl
